@@ -1,0 +1,9 @@
+namespace:
+  name: "development"
+
+airflow:
+  namespace: "airflow"
+  # IMPORTANT: Check your actual service account name.
+  # For the official chart, it might be `airflow-worker` or just `airflow` depending on configuration.
+  serviceAccount: "airflow-scheduler" # Updated based on kubectl get sa
+

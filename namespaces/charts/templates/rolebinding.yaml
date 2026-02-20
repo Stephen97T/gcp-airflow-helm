@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.namespaces.io/v1
+kind: RoleBinding
+metadata:
+  name: airflow-worker-cross-namespace
+  namespace: {{ .Values.namespace.name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.airflow.serviceAccount }}
+    namespace: {{ .Values.airflow.namespace }}
+roleRef:
+  kind: Role
+  name: airflow-worker-role
+  apiGroup: rbac.authorization.namespaces.io
+

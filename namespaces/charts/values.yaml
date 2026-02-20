@@ -1,0 +1,10 @@
+# Defaults
+namespace:
+  create: true
+  name: "default"
+
+# Configuration for the Airflow instance that needs access
+airflow:
+  namespace: "airflow"             # The namespace where Airflow is installed
+  serviceAccount: "airflow-worker" # The ServiceAccount name (check with `kubectl get sa -n airflow`)
+

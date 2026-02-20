@@ -1,0 +1,10 @@
+apiVersion: rbac.authorization.namespaces.io/v1
+kind: Role
+metadata:
+  name: airflow-worker-role
+  namespace: {{ .Values.namespace.name }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log"]
+    verbs: ["create", "get", "list", "watch", "delete"]
+

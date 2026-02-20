@@ -1,0 +1,8 @@
+namespace:
+  name: "production"
+
+airflow:
+  namespace: "airflow"
+  # IMPORTANT: Check your actual service account name.
+  serviceAccount: "airflow-scheduler" # Updated based on kubectl get sa
+
