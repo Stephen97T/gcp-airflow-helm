@@ -11,6 +11,7 @@ with DAG(
     catchup=False,
     schedule=None,
     tags=["example"],
+    namespace="development",
 ) as dag:
     task1 = BashOperator(
         task_id="task1",

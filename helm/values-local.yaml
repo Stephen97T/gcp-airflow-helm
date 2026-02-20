@@ -35,7 +35,7 @@ postgresql:
 dags:
   gitSync:
     enabled: true
-    repo: https://github.com/YOUR_USERNAME/gcp-airflow-helm.git
+    repo: https://github.com/Stephen97T/gcp-airflow-helm.git # Update with your repo URL
     branch: main
     subPath: "dags"  # Folder containing DAG files
     wait: 60  # Check for updates every 60 seconds
