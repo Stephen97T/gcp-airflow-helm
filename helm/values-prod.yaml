@@ -1,0 +1,136 @@
+# ============================================
+# Airflow Helm Chart Configuration
+# Optimized for: Minikube (local) + GKE Autopilot (cloud)
+# ============================================
+
+# 1. EXECUTOR CONFIGURATION
+# KubernetesExecutor = Each task runs in its own pod
+executor: "KubernetesExecutor"
+
+# 2. AIRFLOW IMAGE
+images:
+  airflow:
+    repository: apache/airflow
+    tag: "2.8.1"
+    pullPolicy: IfNotPresent
+
+# 3. DATABASE (In-Cluster PostgreSQL)
+# This keeps it free-tier friendly
+postgresql:
+  enabled: true
+  image:
+    repository: bitnami/postgresql
+    tag: "latest"
+  auth:
+    username: airflow
+    password: airflow  # Use a strong password in production!
+    database: airflow
+  persistence:
+    enabled: true
+    size: 5Gi  # Small enough for free tier
+    storageClass: standard  # Works with both Minikube and GKE
+
+# 4. DAG LOADING VIA GIT-SYNC
+# DAGs are pulled from GitHub (no need to rebuild images)
+# DISABLED for initial deployment - will enable after creating DAGs
+dags:
+  gitSync:
+    enabled: false  # Disabled until we have DAGs
+    repo: https://github.com/YOUR_USERNAME/gcp-airflow-helm.git
+    branch: main
+    subPath: "dags"  # Folder containing DAG files
+    wait: 60  # Check for updates every 60 seconds
+    maxFailures: 3
+
+# 5. WEBSERVER CONFIGURATION
+webserver:
+  replicas: 1
+  service:
+    type: LoadBalancer  # Gets external IP (or use NodePort for Minikube)
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "1000m"
+      memory: "2Gi"
+  defaultUser:
+    enabled: true
+    role: Admin
+    username: stephen97t
+    email: stephen.tseng.1997@gmail.com
+    firstName: Stephen
+    lastName: Tseng
+    password: airflow # Use a strong password in production!
+
+
+# 6. SCHEDULER CONFIGURATION
+scheduler:
+  replicas: 1
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "1000m"
+      memory: "2Gi"
+
+# 7. TRIGGERER (Airflow 2.x Feature for Deferrable Operators)
+triggerer:
+  enabled: true
+  replicas: 1
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
+
+# 8. WORKERS (Not used with KubernetesExecutor, but keeping config)
+workers:
+  replicas: 0  # KubernetesExecutor spawns pods on-demand
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
+
+# 9. REDIS (Not needed for KubernetesExecutor)
+redis:
+  enabled: false
+
+# 10. ENVIRONMENT VARIABLES
+env:
+  - name: AIRFLOW__CORE__LOAD_EXAMPLES
+    value: "False"  # Don't load example DAGs
+  - name: AIRFLOW__WEBSERVER__EXPOSE_CONFIG
+    value: "True"  # Useful for debugging
+  - name: AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION
+    value: "True"  # New DAGs start paused
+
+# 11. LOGGING
+logs:
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClassName: standard
+
+# 12. SERVICE ACCOUNT (For Workload Identity - GKE only)
+serviceAccount:
+  create: true
+  name: airflow-sa
+  annotations: {}
+    # Uncomment when deploying to GKE with Workload Identity:
+    # iam.gke.io/gcp-service-account: airflow-sa@[PROJECT-ID].iam.gserviceaccount.com
+
+# 13. EXTRA CONFIGURATION
+# Disable StatefulSet pod management policy for faster updates
+statefulset:
+  podManagementPolicy: Parallel
+
+# 14. FLOWER (Optional Web UI for Celery - not needed for KubernetesExecutor)
+flower:
+  enabled: false
