@@ -4,5 +4,5 @@ namespace:
 airflow:
   namespace: "airflow"
   # IMPORTANT: Check your actual service account name.
-  serviceAccount: "airflow-scheduler" # Updated based on kubectl get sa
+  serviceAccount: "airflow-worker" # Updated based on kubectl get sa
 

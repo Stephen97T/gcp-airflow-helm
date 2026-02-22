@@ -5,7 +5,7 @@ import pendulum
 from airflow.models.dag import DAG
 from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
 
-NAMESPACE = os.getenv("AIRFLOW_POD_NAMESPACE", "development")
+NAMESPACE = os.getenv("RUN_TARGET_NAMESPACE", "development")
 
 with DAG(
     dag_id="task_2",

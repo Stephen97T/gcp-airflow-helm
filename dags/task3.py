@@ -6,7 +6,7 @@ from airflow.models.dag import DAG
 from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
 from airflow.models.baseoperator import chain  # type: ignore[import-not-found]
 
-NAMESPACE = os.getenv("AIRFLOW_POD_NAMESPACE", "development")
+NAMESPACE = os.getenv("RUN_TARGET_NAMESPACE", "development")
 
 with DAG(
     dag_id="task_3",
