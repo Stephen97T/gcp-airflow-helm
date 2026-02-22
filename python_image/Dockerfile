@@ -4,8 +4,11 @@ ENV PYTHONPATH=/app
 
 WORKDIR /app
 
-COPY python_image/requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt /app/requirements.txt
+# Filter out airflow and dev packages
+RUN grep -v "apache-airflow" requirements.txt | grep -v "pytest" | grep -v "ruff" | grep -v "mypy" > requirements.tmp && \
+    pip install --no-cache-dir -r requirements.tmp && \
+    rm requirements.tmp
 
 COPY python_image /app/
 
