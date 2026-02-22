@@ -1,0 +1,11 @@
+services:
+  task4:
+    build:
+      context: ..
+      dockerfile: python_image/Dockerfile
+    image: us-east1-docker.pkg.dev/gcp-airflow-helm/tasks-repo/task4:latest
+
+    container_name: task4
+
+    volumes:
+        - ../data:/app/data
