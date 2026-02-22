@@ -103,6 +103,8 @@ redis:
 
 # 10. ENVIRONMENT VARIABLES
 env:
+  - name: AIRFLOW_POD_NAMESPACE
+    value: "development"
   - name: AIRFLOW__CORE__LOAD_EXAMPLES
     value: "False"  # Don't load example DAGs
   - name: AIRFLOW__WEBSERVER__EXPOSE_CONFIG
