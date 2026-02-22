@@ -1,7 +1,8 @@
 import os
-from google.cloud import storage
+from google.cloud import storage # type: ignore
 
-def write_local_file(file_name, content):
+
+def write_local_file(file_name: str, content: str) -> None:
     """Writes a file to the local data directory."""
     data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
     os.makedirs(data_dir, exist_ok=True)
@@ -10,7 +11,7 @@ def write_local_file(file_name, content):
         f.write(content)
     print(f"File '{file_name}' written to '{data_dir}'.")
 
-def write_to_gcs(file_name, content):
+def write_to_gcs(file_name: str, content: str) -> None:
     """Uploads a file to a GCS bucket."""
     bucket_name = os.environ.get("GCP_BUCKET")
     if not bucket_name:
@@ -22,7 +23,7 @@ def write_to_gcs(file_name, content):
     blob.upload_from_string(content)
     print(f"File '{file_name}' uploaded to bucket '{bucket_name}'.")
 
-def main():
+def main() -> None:
     """
     Writes a dummy file to a GCS bucket or a local directory.
     """
@@ -37,4 +38,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
