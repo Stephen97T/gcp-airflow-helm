@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import pendulum
-
+import os
 from airflow.models.dag import DAG
 from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
+from airflow.models.baseoperator import chain  # type: ignore[import-not-found]
 
-from airflow.models.baseoperator import chain
+NAMESPACE = os.getenv("AIRFLOW_POD_NAMESPACE", "development")
 
 with DAG(
     dag_id="task_3",
@@ -14,11 +15,12 @@ with DAG(
     schedule=None,
     tags=["example"],
 ) as dag:
+
     def create_task(step: int) -> KubernetesPodOperator:
         return KubernetesPodOperator(
             task_id=f"task{step}",
             name=f"task{step}-pod",
-            namespace="development",
+            namespace=NAMESPACE,
             image="python:3.10-slim",
             cmds=["echo", f"completed task {step} successfully"],
             get_logs=True,
