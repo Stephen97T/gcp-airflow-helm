@@ -107,8 +107,9 @@ If something goes wrong:
 # View release history
 helm history airflow -n airflow
 
-# Rollback to previous version
-helm rollback airflow -n airflow
+# Rollback to previous version (e.g. revision 1)
+# helm rollback <release-name> <revision-number> -n <namespace>
+helm rollback airflow 1 -n airflow
 ```
 
 ## 🗑️ Uninstall
