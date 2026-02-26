@@ -85,9 +85,10 @@ kubectl get svc -n airflow airflow-webserver
 - To test upgrades locally, use `values-local-upgrade.yaml` and set the desired Airflow version.
 - Always back up your database before upgrading!
 - Update the `images.airflow.tag` or `defaultAirflowTag` in your values file.
+- Check helm version compatibility with the Airflow version you want to upgrade to: *helm search repo apache-airflow/airflow --versions*
 - Upgrade with:
   ```powershell
-  helm upgrade airflow apache-airflow/airflow -f helm/values-local-upgrade.yaml -f helm/secrets.yaml -n airflow
+  helm upgrade airflow apache-airflow/airflow --version 1.18.0 -f helm/values-local-upgrade.yaml -f helm/secrets.yaml -n airflow
   ```
 
 ## 📝 Updating Configuration
