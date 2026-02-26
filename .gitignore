@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # secrets values.yaml
-helm/secrets.yaml
+secrets.yaml
 
 # Distribution / packaging
 .Python
