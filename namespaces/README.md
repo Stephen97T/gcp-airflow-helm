@@ -34,3 +34,13 @@ kubectl get rolebinding airflow-worker-cross-namespace -n development
 # Check if the RoleBinding exists in production
 kubectl get rolebinding airflow-worker-cross-namespace -n production
 ```
+
+## Debugging Namespace Permissions
+
+If Airflow pods fail to start due to RBAC issues, check permissions with:
+
+```powershell
+kubectl auth can-i create pods -n development --as system:serviceaccount:airflow:airflow-worker
+```
+
+This command verifies if the Airflow worker service account can create pods in the development namespace.
