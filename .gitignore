@@ -219,3 +219,5 @@ __marimo__/
 *-secret.ps1
 *-credentials.ps1
 create-admin-secret.ps1
+
+data/
