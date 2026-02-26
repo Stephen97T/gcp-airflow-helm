@@ -1,123 +1,135 @@
-# Helm Configuration
+# ⚠️ Backup Before Upgrading Airflow!
 
-This folder contains Helm chart configuration for Apache Airflow deployment.
+**Before upgrading Airflow, always back up your PostgreSQL database!**
 
-## 📁 Files
+1. Ensure the `data` directory exists:
+   ```powershell
+   if (!(Test-Path -Path "data")) { New-Item -ItemType Directory -Path "data" }
+   ```
+2. Backup your database:
+   ```powershell
+   kubectl exec -it airflow-postgresql-0 -n airflow -- pg_dump -U postgres postgres > data/airflow_backup_$(Get-Date -Format "yyyyMMdd").sql
+   ```
 
-- **`values-prod.yaml`** - Main configuration file for Airflow Helm chart GKE
-- **`values-local.yaml`** - Configuration file optimized for local Minikube deployment
-- **`default-values-reference.yaml`** - Complete default values from official chart (reference only)
+---
 
-### Security Notes:
+# Helm Chart Configuration for Apache Airflow
 
-**For production:** Consider using:
-- Google Secret Manager
+This folder contains all configuration files for deploying Apache Airflow using Helm on Kubernetes (Minikube or GKE).
 
-## 🚀 Deploying Airflow
+## 📁 File Overview
 
-### Prerequisites:
+| File                        | Purpose                                                      |
+|-----------------------------|--------------------------------------------------------------|
+| `values-local.yaml`         | Local (Minikube) deployment configuration                    |
+| `values-prod.yaml`          | Production (GKE) deployment configuration                    |
+| `values-local-upgrade.yaml` | For testing upgrades (e.g., Airflow 3.x) locally             |
+| `secrets-template.yaml`     | Template for secrets (copy and fill to create `secrets.yaml`) |
+| `secrets.yaml`              | Actual secrets (required for deployment, not committed)       |
+| `default-values-reference.yaml` | Reference: full default values from upstream chart         |
 
-1. Kubernetes cluster running (Minikube or GKE)
-2. `airflow` namespace exists
+## 🛡️ Secrets Setup
 
-### Start minikube (if using Minikube):
+1. Copy `secrets-template.yaml` to `secrets.yaml`:
+   ```powershell
+   cp helm/secrets-template.yaml helm/secrets.yaml
+   ```
+2. Edit `secrets.yaml` and fill in strong values for all fields (especially passwords and keys).
 
+## 🚀 Step-by-Step Deployment
+
+### Prerequisites
+- Kubernetes cluster (Minikube or GKE)
+- Helm installed
+- Namespace created (e.g., `airflow`)
+
+### 1. Start Minikube (if local)
 ```powershell
-minikube start --driver=docker --cpus 4 --memory 6144 # can adjust to memory available on your machine
+minikube start --driver=docker --cpus 4 --memory 6144
 ```
 
-### Create Namespace:
-
+### 2. Create Namespace
 ```powershell
 kubectl create namespace airflow
 ```
 
-### Deploy Command:
+### 3. Deploy Airflow
 
-#### Local Minikube:
-Need to use specific helm version for compatibility with airflow 2.8.1.
-see ***helm search repo apache-airflow/airflow --versions***
+#### Local (Minikube):
 ```powershell
-# Deploy to local Minikube cluster
-helm install airflow apache-airflow/airflow --version 1.12.0 -f helm/values-local.yaml -n airflow
+helm install airflow apache-airflow/airflow --version 1.12.0 -f helm/values-local.yaml -f helm/secrets.yaml -n airflow
 ```
 
-#### GKE:
+#### Production (GKE):
 ```powershell
-# Deploy to current cluster
- helm install airflow apache-airflow/airflow --version 1.12.0 -f helm/values-prod.yaml -n airflow
+helm install airflow apache-airflow/airflow --version 1.12.0 -f helm/values-prod.yaml -f helm/secrets.yaml -n airflow
 ```
 
-### Access Airflow UI:
+### 4. Access Airflow UI
 
-**For Minikube:**
+**Minikube:**
 ```powershell
-# Port forward to localhost
-kubectl port-forward svc/airflow-webserver 8081:8080 -n airflow # Port 8080 was not available, using 8081 instead
-
-kubectl exec -it deploy/airflow-scheduler -n airflow -- airflow users create --username admin --firstname Stephen --lastname User --role Admin --email stephen@example.com --password admin
-
-
-# Open browser to: http://localhost:8080
+kubectl port-forward svc/airflow-webserver 8081:8080 -n airflow
+kubectl exec -it deploy/airflow-scheduler -n airflow -- airflow users create --username admin --firstname Name --lastname User --role Admin --email name@example.com --password password
+# Open http://localhost:8080
 ```
 
-**For GKE:**
+**GKE:**
 ```powershell
-# Get LoadBalancer external IP
 kubectl get svc -n airflow airflow-webserver
-
-# Open browser to: http://<EXTERNAL-IP>:8080
+# Open http://<EXTERNAL-IP>:8080
 ```
 
-**Login credentials:**
-- Username
-- Password
+## 🔄 Upgrading Airflow
 
-## 🔧 Configuration Highlights
-
-### Executor
-- **KubernetesExecutor** - Each task runs in its own pod (Autopilot-friendly)
-
-### Database
-- **In-cluster PostgreSQL** - 5Gi storage (free tier optimized)
-
-### DAGs
-- **Git-Sync enabled** - Automatically pulls DAGs from GitHub
-- Update the repo URL in `values.yaml` before deploying
-
-### Resources
-- Optimized for GKE Autopilot constraints
-- Scheduler: 500m CPU, 1Gi RAM
-- Webserver: 500m CPU, 1Gi RAM
+- To test upgrades locally, use `values-local-upgrade.yaml` and set the desired Airflow version.
+- Always back up your database before upgrading!
+- Update the `images.airflow.tag` or `defaultAirflowTag` in your values file.
+- Upgrade with:
+  ```powershell
+  helm upgrade airflow apache-airflow/airflow -f helm/values-local-upgrade.yaml -f helm/secrets.yaml -n airflow
+  ```
 
 ## 📝 Updating Configuration
 
-1. Edit `values.yaml`
+1. Edit the relevant `values-*.yaml` file.
 2. Apply changes:
    ```powershell
-   helm upgrade airflow apache-airflow/airflow `
-     --namespace airflow `
-     --values helm/values.yaml
+   helm upgrade airflow apache-airflow/airflow -f helm/values-local.yaml -f helm/secrets.yaml -n airflow
+   # or for prod:
+   helm upgrade airflow apache-airflow/airflow -f helm/values-prod.yaml -f helm/secrets.yaml -n airflow
    ```
 
-## 🔄 Rollback
+## 🛠️ Troubleshooting & Tips
 
-If something goes wrong:
-```powershell
-# View release history
-helm history airflow -n airflow
-
-# Rollback to previous version (e.g. revision 1)
-# helm rollback <release-name> <revision-number> -n <namespace>
-helm rollback airflow 1 -n airflow
-```
+- **Check Helm release history:**
+  ```powershell
+  helm history airflow -n airflow
+  ```
+- **Rollback to previous version:**
+  ```powershell
+  helm rollback airflow <REVISION> -n airflow
+  ```
+- **Check if service account can create pods:**
+  ```powershell
+  kubectl auth can-i create pods -n airflow --as system:serviceaccount:airflow:airflow-scheduler
+  ```
+- **Check logs:**
+  ```powershell
+  kubectl logs <pod-name> -n airflow
+  ```
 
 ## 🗑️ Uninstall
-
+Whenever you want to uninstall Airflow, run:
 ```powershell
-# Remove Airflow deployment (keeps secrets)
 helm uninstall airflow -n airflow
-
-# Optional: Delete namespace and all resources
+kubectl delete pods --all -n airflow
+kubectl delete pvc --all -n airflow # Deletes postgresql data, so be cautious!
 kubectl delete namespace airflow
 ```
+
+In case you are experiencing a lot of bugs with installing airflow, you can reset with these commands and try installing again using helm.
+
+---
+
+For more details, see the [official Apache Airflow Helm Chart documentation](https://airflow.apache.org/docs/helm-chart/stable/index.html).
