@@ -1,4 +1,4 @@
-# Python Image: Build & Usage Guide
+# 🐍 Python Image: Build & Usage Guide
 
 This guide explains how to build and use the Docker image for the `python_image` (e.g., for task4), both locally (Minikube) and for Google Artifact Registry (GCP).
 
@@ -6,31 +6,43 @@ This guide explains how to build and use the Docker image for the `python_image`
 
 ## 🐳 Build Locally for Minikube
 
-First, configure your shell to use the Minikube Docker daemon:
+1. **Configure your shell to use the Minikube Docker daemon:**
 
-```powershell
-minikube docker-env --shell powershell | Invoke-Expression
-```
+   ```powershell
+   minikube docker-env --shell powershell | Invoke-Expression
+   ```
 
-Test if Docker is using the Minikube context:
+2. **Test if Docker is using the Minikube context:**
 
-```powershell
-docker info | Select-String Name
-```
+   ```powershell
+   docker info | Select-String Name
+   ```
 
-Build the image from the project root:
+3. **Build the image from the project root:**
+   > Make sure you are using the same terminal as the minikube command to ensure the Docker context is correct.
 
-```powershell
-docker compose -f python_image/docker-compose.yml build
-```
+   ```powershell
+   docker compose -f python_image/docker-compose.yml build
+   ```
+
+4. **Check if the image is built:**
+
+   ```powershell
+   minikube image ls | Select-String "task4"
+   ```
+
+5. **If you experience issues, load the image into Minikube manually:**
+
+   ```powershell
+   minikube image load task4:dev
+   ```
 
 ---
 
 ## 🏷️ Tag & Push to Google Artifact Registry (GCP)
 
 1. **Tag the image for GCP Artifact Registry:**
-
-   Replace `<PROJECT_ID>` with your GCP project ID if needed.
+   > Replace `<PROJECT_ID>` with your GCP project ID if needed.
 
    ```powershell
    docker tag python_image_task4:latest us-east1-docker.pkg.dev/gcp-airflow-helm/tasks-repo/task4:latest
@@ -39,7 +51,7 @@ docker compose -f python_image/docker-compose.yml build
 2. **Authenticate Docker with GCP:**
 
    ```powershell
-gcloud auth configure-docker us-east1-docker.pkg.dev
+   gcloud auth configure-docker us-east1-docker.pkg.dev
    ```
 
 3. **Push the image:**
@@ -57,7 +69,7 @@ gcloud auth configure-docker us-east1-docker.pkg.dev
 
 ---
 
-## Example: Build, Tag, and Push (All Steps)
+## 💡 Example: Build, Tag, and Push (All Steps)
 
 ```powershell
 minikube docker-env --shell powershell | Invoke-Expression
@@ -73,3 +85,5 @@ docker tag python_image_task4:latest us-east1-docker.pkg.dev/gcp-airflow-helm/ta
 gcloud auth configure-docker us-east1-docker.pkg.dev
 docker push us-east1-docker.pkg.dev/gcp-airflow-helm/tasks-repo/task4:latest
 ```
+
+---
