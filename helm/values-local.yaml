@@ -20,10 +20,6 @@ postgresql:
   image:
     repository: bitnami/postgresql
     tag: "latest"
-  auth:
-    username: airflow
-    password: airflow  # Use a strong password in production!
-    database: airflow
   persistence:
     enabled: true
     size: 5Gi
@@ -53,14 +49,6 @@ webserver:
     limits:
       cpu: "1000m"
       memory: "2Gi"
-  defaultUser:
-    enabled: true
-    role: Admin
-    username: admin
-    email: admin@example.com
-    firstName: Admin
-    lastName: Admin
-    password: admin # Use a strong password in production!
 
 
 # 6. SCHEDULER CONFIGURATION
