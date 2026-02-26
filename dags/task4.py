@@ -18,7 +18,7 @@ with DAG(
         task_id="task4",
         name="task4-pod",
         namespace=NAMESPACE,
-        image="us-east1-docker.pkg.dev/gcp-airflow-helm/tasks-repo/task4:latest",
+        image="task4:dev",
         image_pull_policy="IfNotPresent",
         cmds=["echo", "completed task 2 successfully"],
         get_logs=True,
