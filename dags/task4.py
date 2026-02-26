@@ -20,6 +20,6 @@ with DAG(
         namespace=NAMESPACE,
         image="task4:dev",
         image_pull_policy="IfNotPresent",
-        cmds=["echo", "completed task 2 successfully"],
+        cmds=["python", "main.py"],
         get_logs=True,
     )
