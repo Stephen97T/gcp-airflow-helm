@@ -121,7 +121,3 @@ helm uninstall airflow -n airflow
 # Optional: Delete namespace and all resources
 kubectl delete namespace airflow
 ```
-
-## 📚 More Information
-
-See `.claude/helm-configuration.md` for detailed configuration documentation.

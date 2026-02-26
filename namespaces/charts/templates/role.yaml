@@ -5,6 +5,5 @@ metadata:
   namespace: {{ .Values.namespace.name }}
 rules:
   - apiGroups: [""]
-    resources: ["pods", "pods/log"]
-    verbs: ["create", "get", "list", "watch", "delete"]
-
+    resources: ["pods", "pods/log", "pods/exec"]
+    verbs: ["create", "get", "list", "watch", "delete", "patch"]
