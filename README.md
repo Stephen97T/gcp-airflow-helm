@@ -79,11 +79,37 @@ This setup uses **Git-Sync**. You do not need to rebuild Docker images to update
 
 ```
 gcp-airflow-helm/
-├── dags/                   # Python DAG files
-│   └── task1.py            # Example DAG
-├── helm/                   # Helm Configuration
+├── dags/                   # Python DAG files (Airflow DAGs)
+│   ├── task1.py            # Example DAG
+│   ├── task2.py
+│   ├── task3.py
+│   ├── task4.py
+├── helm/                   # Helm configuration for Airflow deployment
 │   ├── values-local.yaml   # Config for Minikube
-│   └── values-prod.yaml    # Config for GKE
+│   ├── values-prod.yaml    # Config for GKE
+│   └── README.md           # Airflow deployment guide
+├── namespaces/             # Namespace and RBAC management (Helm chart)
+│   ├── charts/             # Helm chart for namespace creation
+│   ├── development/        # Development namespace values
+│   ├── production/         # Production namespace values
+│   └── README.md           # Namespace deployment guide
+├── python_image/           # Custom Docker image for task4
+│   ├── Dockerfile
+│   ├── docker-compose.yml
+│   ├── main.py
+│   └── README.md           # Build/tag/push instructions for task4 image
+├── tests/                  # Unit tests for DAGs and python_image
 ├── .claude/                # AI-generated documentation & guides
 └── README.md               # This file
 ```
+
+---
+
+## 📖 Documentation Map
+
+- **Airflow Deployment:** See [`helm/README.md`](helm/README.md) for deploying and managing Airflow with Helm (local & GKE).
+- **Namespace Management:** See [`namespaces/README.md`](namespaces/README.md) for creating and configuring Kubernetes namespaces and RBAC for Airflow.
+- **Custom Task4 Image:** See [`python_image/README.md`](python_image/README.md) for building, tagging, and pushing the Docker image used by one of the Airflow DAGs.
+- **DAG Development:** Place your DAGs in the `dags/` folder. No rebuild required—Git-Sync will update DAGs automatically.
+
+Refer to each subdirectory's README for detailed, environment-specific instructions and troubleshooting tips.

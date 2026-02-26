@@ -1,15 +1,15 @@
-# Kubernetes Namespace Management
+# 🗂️ Kubernetes Namespace Management
 
 This directory contains the configuration for initializing the `development` and `production` namespaces with the correct permissions for Airflow.
 To add more namespaces just copy one of the folders (e.g. development or production) and rename the namespace in the ***values.yaml***
 
-## Structure
+## 📁 Structure
 
 *   `charts/`: The base Helm chart that creates a Namespace, Role, and RoleBinding.
 *   `development/values.yaml`: Configuration specific to the development environment.
 *   `production/values.yaml`: Configuration specific to the production environment.
 
-## How to Apply (Trigger with Helm)
+## 🚀 How to Apply (Trigger with Helm)
 
 To create the **Development** namespace and permissions:
 
@@ -23,7 +23,7 @@ To create the **Production** namespace and permissions:
 helm upgrade --install airflow-prod-ns namespaces/charts -f namespaces/production/values.yaml
 ```
 
-## Verification
+## ✅ Verification
 
 After running the commands, you can verify the permissions are set correctly:
 
@@ -35,7 +35,7 @@ kubectl get rolebinding airflow-worker-cross-namespace -n development
 kubectl get rolebinding airflow-worker-cross-namespace -n production
 ```
 
-## Debugging Namespace Permissions
+## 🛠️ Debugging Namespace Permissions
 
 If Airflow pods fail to start due to RBAC issues, check permissions with:
 
