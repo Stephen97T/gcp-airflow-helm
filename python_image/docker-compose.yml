@@ -3,7 +3,7 @@ services:
     build:
       context: ..
       dockerfile: python_image/Dockerfile
-    image: us-east1-docker.pkg.dev/gcp-airflow-helm/tasks-repo/task4:latest
+    image: task4:dev #us-east1-docker.pkg.dev/gcp-airflow-helm/tasks-repo/task4:latest
 
     container_name: task4
 
