@@ -7,8 +7,12 @@
    if (!(Test-Path -Path "data")) { New-Item -ItemType Directory -Path "data" }
    ```
 2. Backup your database:
+    use login credentials of the postgres superuser, for local minikube deployment, these have the basic values:
+    - user: postgres
+    - password: postgres
+    - database: <database name> (filled in your secrets.yaml, default is `postgres`)
    ```powershell
-   kubectl exec -it airflow-postgresql-0 -n airflow -- pg_dump -U postgres postgres > data/airflow_backup_$(Get-Date -Format "yyyyMMdd").sql
+   kubectl exec -n airflow airflow-postgresql-0 -- sh -c "PGPASSWORD='<postgres password)>' pg_dump -U <postgres user> -d <database name>" > data/airflow_backup_$(Get-Date -Format "yyyyMMdd").sql
    ```
 
 ---
