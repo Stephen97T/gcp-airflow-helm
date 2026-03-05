@@ -85,6 +85,19 @@ kubectl get svc -n airflow airflow-webserver
 ```
 
 ## 🔄 Upgrading Airflow
+*note* before upgrading make sure to check the alembic stamp of the postgres database, if this is not correct
+it could hinder the upgrade process, you can check by running:
+```powershell
+kubectl exec -n $Namespace $PostgresPod -- `
+env PGPASSWORD=$PostgresPassword `
+psql -U $PostgresUser -d $DbName -c "SELECT * FROM alembic_version;"
+```
+incase the version is not 88344c1d9134, in my case the version was ...
+
+make sure to migrate the database
+```powershell
+kubectl exec -it deployment/airflow-scheduler -n airflow -- airflow db migrate
+```
 
 - To test upgrades locally, use `values-local-upgrade.yaml` and set the desired Airflow version.
 - Always back up your database before upgrading!
@@ -92,6 +105,8 @@ kubectl get svc -n airflow airflow-webserver
 - Check helm version compatibility with the Airflow version you want to upgrade to: *helm search repo apache-airflow/airflow --versions*
 - Upgrade with:
   ```powershell
+  helm upgrade airflow apache-airflow/airflow --version 1.16.0 -f helm/values-local.yaml -f helm/secrets.yaml -n airflow
+
   helm upgrade airflow apache-airflow/airflow --version 1.18.0 -f helm/values-local-upgrade.yaml -f helm/secrets.yaml -n airflow
   ```
 
