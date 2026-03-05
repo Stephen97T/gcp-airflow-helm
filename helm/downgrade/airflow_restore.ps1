@@ -62,8 +62,11 @@ kubectl exec -n $Namespace $PostgresPod -- `
 env PGPASSWORD=$PostgresPassword `
 psql -U $PostgresUser -d $DbName -c "SELECT * FROM alembic_version;"
 
-Write-Host "==> 9. Downgrade Airflow via Helm..."
-helm upgrade airflow apache-airflow/airflow --version 1.12.0 -f helm/values-local.yaml -f helm/secrets.yaml -n $Namespace
+Write-Host "==> 9. Rollback 1 version before via Helm..."
+$lastRev = (helm history airflow -n airflow --max 2 | Select-Object -Skip 1 | ForEach-Object { $_.Split(" ")[0] })[0]
+helm rollback airflow $lastRev -n airflow
+
+#helm upgrade airflow apache-airflow/airflow --version 1.12.0 -f helm/values-local.yaml -f helm/secrets.yaml -n $Namespace
 
 Write-Host "==> 10. Clean up Airflow 3 deployments..."
 kubectl delete pod airflow-triggerer-0  -n $Namespace
