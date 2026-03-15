@@ -10,7 +10,7 @@ $PostgresPod = "airflow-postgresql-0"
 $PostgresUser = "postgres"
 $PostgresPassword = "postgres" # Update with actual password
 $DbName = "airflow_db"
-$BackupFileLocal = "data/airflow_backup_20260227.sql"
+$BackupFileLocal = "data/airflow_3.0.2_backup_20260311.sql"
 $BackupFilePod = "/tmp/airflow_backup.sql"
 $BackupFileUtf8 = "/tmp/airflow_utf8.sql"
 
