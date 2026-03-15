@@ -10,13 +10,13 @@ executor: "KubernetesExecutor"
 # 2. AIRFLOW IMAGE
 defaultAirflowImage:
   repository: apache/airflow
-defaultAirflowTag: "3.0.3"
-airflowVersion: "3.0.3"
+defaultAirflowTag: "3.1.7"
+airflowVersion: "3.1.7"
 
 images:
   airflow:
     repository: apache/airflow
-    tag: "3.0.3"  # Upgrade to this version for testing
+    tag:  "3.1.7"
     pullPolicy: IfNotPresent
 
 # 3. DATABASE (In-Cluster PostgreSQL)
