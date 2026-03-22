@@ -4,8 +4,13 @@ metadata:
   name: airflow-worker-cross-namespace
   namespace: {{ .Values.namespace.name }}
 subjects:
+  # Airflow 3.x: Scheduler creates and manages KubernetesPodOperator pods
   - kind: ServiceAccount
-    name: {{ .Values.airflow.serviceAccount }}
+    name: {{ .Values.airflow.schedulerServiceAccount }}
+    namespace: {{ .Values.airflow.namespace }}
+  # Airflow 2.x: Worker service account (keeping for backward compatibility)
+  - kind: ServiceAccount
+    name: {{ .Values.airflow.workerServiceAccount }}
     namespace: {{ .Values.airflow.namespace }}
 roleRef:
   kind: Role

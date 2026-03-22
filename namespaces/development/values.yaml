@@ -3,7 +3,8 @@ namespace:
 
 airflow:
   namespace: "airflow"
-  # IMPORTANT: Check your actual service account name.
-  # For the official chart, it might be `airflow-worker` or just `airflow` depending on configuration.
-  serviceAccount: "airflow-worker" # Updated based on kubectl get sa
+  # Airflow 3.x: Scheduler creates and manages KubernetesPodOperator pods
+  schedulerServiceAccount: "airflow-scheduler"
+  # Airflow 2.x: Worker service account (keeping for backward compatibility)
+  workerServiceAccount: "airflow-worker"
 

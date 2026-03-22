@@ -5,6 +5,7 @@ namespace:
 
 # Configuration for the Airflow instance that needs access
 airflow:
-  namespace: "airflow"             # The namespace where Airflow is installed
-  serviceAccount: "airflow-worker" # The ServiceAccount name (check with `kubectl get sa -n airflow`)
+  namespace: "airflow"                        # The namespace where Airflow is installed
+  schedulerServiceAccount: "airflow-scheduler" # Airflow 3.x: Scheduler manages pods
+  workerServiceAccount: "airflow-worker"      # Airflow 2.x: Worker service account (backward compatibility)
 
