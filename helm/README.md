@@ -74,6 +74,7 @@ helm install airflow apache-airflow/airflow --version 1.12.0 -f helm/values-prod
 **Minikube:**
 ```powershell
 kubectl port-forward svc/airflow-webserver 8081:8080 -n airflow
+kubectl port-forward svc/airflow-api-server 8081:8080 -n airflow
 kubectl exec -it deploy/airflow-scheduler -n airflow -- airflow users create --username admin --firstname Name --lastname User --role Admin --email name@example.com --password password
 # Open http://localhost:8080
 ```
