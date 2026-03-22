@@ -22,4 +22,5 @@ with DAG(
         image_pull_policy="IfNotPresent",
         cmds=["python", "main.py"],
         get_logs=True,
+        in_cluster=True,
     )
