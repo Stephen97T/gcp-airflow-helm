@@ -24,4 +24,5 @@ with DAG(
         get_logs=True,
         in_cluster=True,
         config_file=None,
+        pod_template_file=None,
     )
