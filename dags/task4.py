@@ -23,4 +23,5 @@ with DAG(
         cmds=["python", "main.py"],
         get_logs=True,
         in_cluster=True,
+        config_file=None,
     )
