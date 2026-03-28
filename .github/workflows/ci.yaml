@@ -1,0 +1,26 @@
+name: CI Pipeline
+
+on: [ push, pull_request ]
+
+jobs:
+  continuous-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint with ruff
+        run: ruff check .
+
+      - name: Type check with mypy
+        run: mypy .
+
+      - name: Run Unit Tests
+        run: pytest
